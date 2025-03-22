@@ -75,7 +75,7 @@ onMounted(() => {
 
 function fetchData() {
   store.fetchMany().then((res) => {
-    data.value = res;
+    data.value = res.sort((a, b) => a.key.localeCompare(b.key));
   });
 }
 </script>

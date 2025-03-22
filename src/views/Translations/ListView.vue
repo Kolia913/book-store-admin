@@ -68,8 +68,9 @@ onMounted(() => {
 
 function fetchData() {
   store.fetchMany().then((data) => {
-    console.log('data', data);
-    translationsData.value = Object.entries(data).map(([key, val]) => ({ key, text_ua: val }));
+    translationsData.value = Object.entries(data)
+      .map(([key, val]) => ({ key, text_ua: val }))
+      .sort((a, b) => a.key.localeCompare(b.key));
   });
 }
 </script>

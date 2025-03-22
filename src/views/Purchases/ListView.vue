@@ -30,7 +30,9 @@
       <template #payment_type="{ item }">
         <span>{{ item.payment_type }}</span>
       </template>
-
+      <template #is_processed="{ item }">
+        <AppStatus :status="item.is_processed" />
+      </template>
       <template #createdAt="{ item }">
         <span>{{ dayjs(item.createdAt).format('DD.MM.YYYY HH:mm') }}</span>
       </template>
@@ -42,6 +44,7 @@
 </template>
 <script setup>
 import AppTable from '@/components/general/AppTable.vue';
+import AppStatus from '@/components/general/AppStatus.vue';
 import { usePurchasesStore } from '@/stores/purchases';
 import { onMounted, ref, reactive, shallowRef } from 'vue';
 import dayjs from 'dayjs';
@@ -78,7 +81,6 @@ const tableColumns = reactive([
     key: 'phone',
     title: 'Телефон',
   },
-
   {
     key: 'total',
     title: 'Сума замовлення',
@@ -87,7 +89,10 @@ const tableColumns = reactive([
     key: 'payment_type',
     title: 'Тип оплати',
   },
-
+  {
+    key: 'is_processed',
+    title: 'Оброблено',
+  },
   {
     key: 'createdAt',
     title: 'Створено',
@@ -115,7 +120,7 @@ onMounted(() => {
 function fetchData() {
   store.fetchMany().then((data) => {
     console.log('data', data);
-    purchasesData.value = data;
+    purchasesData.value = data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
   });
 }
 </script>

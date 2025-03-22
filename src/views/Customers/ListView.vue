@@ -104,7 +104,7 @@ onMounted(() => {
 function fetchData() {
   store.fetchMany().then((data) => {
     // console.log('data', data);
-    customersData.value = data;
+    customersData.value = data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
   });
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <breadcrumbs :breadcrumbs="breadcrumbsData" />
   <page-title :text="`Замовлення № ${data.id}`" />
-  <FormWrapper>
+  <FormWrapper @submit="onSubmit">
     <template #form>
       <div class="flex flex-col 2xl:flex-row justify-between">
         <div>
@@ -82,6 +82,13 @@
         </div>
       </div>
     </template>
+    <template #controls>
+      <div>
+        <span class="block mb-2 text-xs text-gray-500 dark:text-gray-400">Оброблено</span>
+        <AppToggleInput v-model="data.is_processed" />
+      </div>
+      <AppButton type="submit" variant="primary" text="Зберегти" />
+    </template>
   </FormWrapper>
 </template>
 <script setup>
@@ -91,6 +98,8 @@ import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
 import { usePurchasesStore } from '@/stores/purchases';
 import useAppConfig from '@/core/composables/useAppConfig';
+import AppToggleInput from '@/components/atoms/inputs/form/AppToggleInput.vue';
+import AppButton from '@/components/atoms/buttons/AppButton.vue';
 
 const route = useRoute();
 const store = usePurchasesStore();
@@ -118,4 +127,13 @@ onBeforeMount(() => {
     data.value = res;
   });
 });
+
+function onSubmit() {
+  store.update({
+    id: route.params.id,
+    payload: {
+      is_processed: data.value.is_processed,
+    },
+  });
+}
 </script>
