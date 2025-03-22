@@ -4,8 +4,18 @@
   <FormWrapper @submit="onSubmit">
     <template #form>
       <AppPlainInput v-model="data.key" type="text" label="Ключ" :disabled="true" />
-      <AppPlainInput v-model="data.admin_title" type="text" label="Системна назва" />
-      <AppPlainInput v-model="data.title" type="text" label="Назва на сайті" />
+      <AppPlainInput
+        v-model="data.admin_title"
+        @change="setKey('admin_title', $event.target.value)"
+        type="text"
+        label="Системна назва"
+      />
+      <AppPlainInput
+        v-model="data.title"
+        @change="setKey('title', $event.target.value)"
+        type="text"
+        label="Назва на сайті"
+      />
       <div>
         <h1 class="text-xl font-bold">Наповнення сторінки</h1>
         <div
@@ -17,6 +27,7 @@
             v-model="data.content[section].admin_title"
             type="text"
             label="Назва на секції"
+            @change="setKey(`content.${section}.admin_title`, $event.target.value)"
           />
           <div
             v-for="field in Object.keys(data.content[section])"
@@ -27,7 +38,10 @@
               <span class="block mb-2 text-xs text-gray-500 dark:text-gray-400"
                 >Секція відображена на сайті</span
               >
-              <AppToggleInput v-model="data.content[section].isActive" />
+              <AppToggleInput
+                v-model="data.content[section].isActive"
+                @change="setKey(`content.${section}.isActive`, $event)"
+              />
             </div>
             <div v-if="field !== 'isActive' && field !== 'admin_title'">
               <span class="text-lg font-bold">{{ data.content[section][field].admin_title }}</span>
@@ -59,7 +73,12 @@
                 v-model="data.content[section][field].value"
                 label="Вміст (зображення)"
                 class="py-2"
-                @change="setKey(`content.${section}.${field}.value`, $event)"
+                @change="
+                  (event) => {
+                    setKey(`content.${section}.${field}.type`, 'image');
+                    setKey(`content.${section}.${field}.value`, event);
+                  }
+                "
               />
               <AppPlainInput
                 v-if="data.content[section][field].type === 'number'"
@@ -70,14 +89,18 @@
                 class="py-2"
                 @change="setKey(`content.${section}.${field}.value`, $event.target.value)"
               />
-              <AppSelectInput
-                v-if="data.content[section][field].type === 'foreign_key'"
-                v-model="data.content[section][field].value"
-                :options="booksData"
-                label="Вміст (посилання на книгу)"
-                class="py-2"
-                @change="setKey(`content.${section}.${field}.value`, $event)"
-              />
+
+              <div v-if="data.content[section][field].type === 'foreign_key'">
+                <span>Вміст (посилання на книгу)</span>
+                <AppSelectInput
+                  dataKey="value"
+                  v-model="data.content[section][field].value"
+                  :options="booksData"
+                  label="label"
+                  class="py-2"
+                  @change="setKey(`content.${section}.${field}.value`, $event)"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -138,7 +161,9 @@ function setKey(key, value) {
 
 onBeforeMount(() => {
   booksStore.fetchMany().then((res) => {
-    booksData.value = res.map((item) => ({ label: item.title, value: item.id }));
+    console.log(res.map((item) => ({ label: item.title, value: item.id })));
+    console.log(res);
+    booksData.value = res.map((item) => ({ label: item.title, value: `${item.id}` }));
   });
 
   store.getPage(route.params.id).then((res) => {
@@ -148,8 +173,17 @@ onBeforeMount(() => {
 });
 
 function onSubmit() {
-  editedFormData.value.entries().forEach(([key, val]) => console.log(key, val));
-  // const payload = { ...data.value, id: undefined, key: undefined };
-  // store.update({ id: route.params.id, payload });
+  let counter = 0;
+  editedFormData.value.values().forEach(() => {
+    counter++;
+  });
+
+  if (counter < 1) {
+    return;
+  }
+  editedFormData.value.set('key', data.value.key);
+  editedFormData.value.set('admin_title', data.value.admin_title);
+  editedFormData.value.set('title', data.value.title);
+  store.update({ id: data.value.id, payload: editedFormData.value });
 }
 </script>

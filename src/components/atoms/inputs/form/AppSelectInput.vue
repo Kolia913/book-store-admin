@@ -9,19 +9,23 @@
       :selectable="() => (max ? model.length < max : true)"
       :label="label"
       :reduce="(option) => option[`${dataKey}`]"
-      @update:modelValue="emit('change')"
     />
   </div>
 </template>
 <script setup>
 import useSettingsStore from '@/stores/settings';
-import { computed, defineModel } from 'vue';
+import { computed, defineModel, watch } from 'vue';
 
 const settingsStore = useSettingsStore();
 defineProps(['options', 'label', 'dataKey', 'isMultiple', 'max']);
 const emit = defineEmits(['change']);
 
 const model = defineModel();
+
+watch(model, (val) => {
+  console.log('val', val);
+  emit('change', val);
+});
 
 const isDarkTheme = computed(() => {
   if (settingsStore.currentTheme !== undefined) {
