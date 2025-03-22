@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-start items-center gap-y-8">
-    <page-title text="Dashboard" />
+    <page-title text="Панель" />
     <div
       class="flex lg:flex-row lg:justify-between flex-col justify-start items-center w-full gap-6"
     >
@@ -13,7 +13,7 @@
               <span class="text-sm text-gray-500 dark:text-gray-400">Admin</span>
             </div>
           </div>
-          <AppButton text="Sign out" variant="outline" class="hidden sm:flex">
+          <AppButton text="Вихід" variant="outline" class="hidden sm:flex">
             <template #icon>
               <SignoutIcon class="w-4 h-4" />
             </template>

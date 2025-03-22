@@ -11,6 +11,8 @@ import Pages from '@/views/Pages';
 import Customers from '@/views/Customers';
 import Purchases from '@/views/Purchases';
 
+import Settings from '@/views/Settings';
+
 const config = useAppConfig();
 
 function isAuthenticated(to, from, next) {
@@ -45,6 +47,9 @@ appRouter.registerModule(Customers, 'Customers', {
 
 // Purchases module
 appRouter.registerModule(Purchases, 'Purchases', {
+
+// Settings module
+appRouter.registerModule(Settings, 'Settings', {
   guards: { beforeEnter: isAuthenticated },
 });
 
