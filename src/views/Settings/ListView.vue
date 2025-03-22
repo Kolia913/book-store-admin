@@ -63,8 +63,8 @@ async function changePassword() {
     return;
   }
   const res = await store.changePassword({
-    prevPassword: prevPassword.value,
-    newPassword: newPassword.value,
+    prevPassword: prevPassword.value.trim(),
+    newPassword: newPassword.value.trim(),
   });
   toast.success(res.message || 'Пароль змінено');
 }

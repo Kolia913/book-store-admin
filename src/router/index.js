@@ -47,6 +47,8 @@ appRouter.registerModule(Customers, 'Customers', {
 
 // Purchases module
 appRouter.registerModule(Purchases, 'Purchases', {
+  guards: { beforeEnter: isAuthenticated },
+});
 
 // Settings module
 appRouter.registerModule(Settings, 'Settings', {
