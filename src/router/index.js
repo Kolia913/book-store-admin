@@ -9,6 +9,8 @@ import Translations from '@/views/Translations';
 import Books from '@/views/Books';
 import Pages from '@/views/Pages';
 
+import Settings from '@/views/Settings';
+
 const config = useAppConfig();
 
 function isAuthenticated(to, from, next) {
@@ -33,6 +35,11 @@ appRouter.registerModule(Pages, 'Pages', {
 
 // Books module
 appRouter.registerModule(Books, 'Books', {
+  guards: { beforeEnter: isAuthenticated },
+});
+
+// Settings module
+appRouter.registerModule(Settings, 'Settings', {
   guards: { beforeEnter: isAuthenticated },
 });
 

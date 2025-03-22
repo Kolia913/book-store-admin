@@ -53,7 +53,7 @@
       {
         "isGroup": false,
         "title": "Налаштування",
-        "link": "/adminsettings",
+        "link": "/settings",
         "icon": "md-settingssuggest-round",
         "key": null
       }
