@@ -1,0 +1,62 @@
+[
+  {
+    "icon": "md-dashboard",
+    "isGroup": false,
+    "title": "Панель",
+    "link": "/",
+    "key": null
+  },
+  {
+    "icon": "bi-bag-heart",
+    "isGroup": false,
+    "title": "Замовлення",
+    "link": "/orders"
+  },
+  {
+    "icon": "fa-user-alt",
+    "isGroup": false,
+    "title": "Клієнти",
+    "link": "/customers",
+    "key": null
+  },
+  {
+    "isGroup": true,
+    "title": "Контент",
+    "key": "Content",
+    "subItems": [
+      {
+        "icon": "hi-document-duplicate",
+        "isGroup": false,
+        "title": "Сторінки",
+        "link": "/pages"
+      },
+      {
+        "icon": "bi-book-half",
+        "isGroup": false,
+        "title": "Книги",
+        "link": "/books"
+      }
+    ]
+  },
+  {
+    "isGroup": true,
+    "title": "Адміністрування",
+    "key": "Settings",
+    "subItems": [
+      {
+        "icon": "bi-translate",
+        "isGroup": false,
+        "title": "Переклади",
+        "link": "/translations",
+        "key": null
+      },
+      {
+        "isGroup": false,
+        "title": "Налаштування",
+        "link": "/adminsettings",
+        "icon": "md-settingssuggest-round",
+        "key": null
+      }
+    ]
+  }
+]
