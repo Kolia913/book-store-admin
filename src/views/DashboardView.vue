@@ -9,8 +9,8 @@
           <div class="flex flex-row justify-start items-center gap-x-3">
             <AvatarDemo class="w-10 h-10 rounded-full" />
             <div class="flex flex-col justify-center items-start">
-              <span class="font-semibold">Welcome</span>
-              <span class="text-sm text-gray-500 dark:text-gray-400">Demo User</span>
+              <span class="font-semibold">Вітання!</span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">Admin</span>
             </div>
           </div>
           <AppButton text="Sign out" variant="outline" class="hidden sm:flex">
@@ -28,7 +28,7 @@
       <AppCard class="w-full">
         <div class="sm:px-6 px-3 py-6 flex flex-row justify-between items-center card__content">
           <div class="flex flex-col justify-center items-start sm:gap-0 gap-1">
-            <span class="font-bold sm:text-xl text-base">Vue Admin</span>
+            <span class="font-bold sm:text-xl text-base">Панель адміністратора</span>
             <span class="text-xs text-gray-500 dark:text-gray-400">v 0.3.1</span>
           </div>
           <div class="flex flex-col justify-center items-start gap-y-2">

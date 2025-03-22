@@ -2,7 +2,7 @@
   <DesktopAside
     :menuItems="menuItems"
     @toggleMenuGroup="toggleMenuGroup"
-    :title="'Адмін Подільська біржа'"
+    :title="'Панель адміністратора'"
     class="lg:block hidden"
   />
   <MobileAside
@@ -10,7 +10,7 @@
     :isMobileAsideOpen="isMobileAsideOpen"
     @toggleMenuGroup="toggleMenuGroup"
     @toggleMobileAside="settingsStore.toggleMobileAside"
-    :title="'Адмін Подільська біржа'"
+    :title="'Панель адміністратора'"
     class="lg:hidden block"
   />
 </template>
