@@ -8,6 +8,8 @@ import DashboardView from '@/views/DashboardView.vue';
 import Translations from '@/views/Translations';
 import Books from '@/views/Books';
 import Pages from '@/views/Pages';
+import Customers from '@/views/Customers';
+import Purchases from '@/views/Purchases';
 
 const config = useAppConfig();
 
@@ -33,6 +35,16 @@ appRouter.registerModule(Pages, 'Pages', {
 
 // Books module
 appRouter.registerModule(Books, 'Books', {
+  guards: { beforeEnter: isAuthenticated },
+});
+
+// Customer module
+appRouter.registerModule(Customers, 'Customers', {
+  guards: { beforeEnter: isAuthenticated },
+});
+
+// Purchases module
+appRouter.registerModule(Purchases, 'Purchases', {
   guards: { beforeEnter: isAuthenticated },
 });
 
