@@ -19,10 +19,10 @@
         <span>{{ item.customer_id }}</span>
       </template>
       <template #name="{ item }">
-        <span>{{ item.Customer.name }} {{ item.Customer.surname }}</span>
+        <span>{{ item.customer_data.name }} {{ item.customer_data.surname }}</span>
       </template>
       <template #phone="{ item }">
-        <span>{{ item.Customer.phone }}</span>
+        <span>{{ item.customer_data.phone }}</span>
       </template>
       <template #total="{ item }">
         <span>{{ item.total }}</span>
