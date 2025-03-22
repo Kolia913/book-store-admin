@@ -99,7 +99,7 @@ const tableColumns = reactive([
   },
   {
     key: 'payment_details',
-    title: 'Коментар',
+    title: 'Статус оплати',
   },
 ]);
 
