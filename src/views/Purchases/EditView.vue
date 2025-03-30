@@ -9,16 +9,16 @@
             <span class="text-xl font-bold">Покупець</span>
             <div class="flex flex-col gap-2 mt-5">
               <span type="text" label="Email"
-                >Ім'я: <strong>{{ data?.Customer?.name }}</strong></span
+                >Ім'я: <strong>{{ data?.customer_data?.name }}</strong></span
               >
               <span type="text" label="Email"
-                >Прізвище: <strong>{{ data?.Customer?.surname }}</strong></span
+                >Прізвище: <strong>{{ data?.customer_data?.surname }}</strong></span
               >
               <span type="text" label="Email"
-                >Номер телефону: <strong>{{ data?.Customer?.phone }}</strong></span
+                >Номер телефону: <strong>{{ data?.customer_data?.phone }}</strong></span
               >
               <span type="text" label="Email"
-                >Електронна пошта: <strong>{{ data?.Customer?.email }}</strong></span
+                >Електронна пошта: <strong>{{ data?.customer_data?.email }}</strong></span
               >
               <span type="text" label="Email"
                 >Дата реєстрації:
@@ -37,19 +37,7 @@
                 >Країна: <strong>{{ data?.delivery_data?.country }}</strong></span
               >
               <span type="text" label="Email"
-                >Область: <strong>{{ data?.delivery_data?.area }}</strong></span
-              >
-              <span type="text" label="Email"
                 >Місто: <strong>{{ data?.delivery_data?.city }}</strong></span
-              >
-              <span type="text" label="Email"
-                >Вулиця:
-                <strong
-                  >{{ data?.delivery_data?.street }} {{ data?.delivery_data?.house }}</strong
-                ></span
-              >
-              <span type="text" label="Email"
-                >Квартира: <strong>{{ data?.delivery_data?.apartment }}</strong></span
               >
               <span type="text" label="Email"
                 >Відділення/Поштомат: <strong>{{ data?.delivery_data?.warehouse }}</strong></span

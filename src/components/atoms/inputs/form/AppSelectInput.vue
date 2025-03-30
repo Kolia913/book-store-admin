@@ -23,7 +23,6 @@ const emit = defineEmits(['change']);
 const model = defineModel();
 
 watch(model, (val) => {
-  console.log('val', val);
   emit('change', val);
 });
 
