@@ -1,14 +1,14 @@
 <template>
   <breadcrumbs :breadcrumbs="breadcrumbsData" />
   <div class="pt-2">
-    <page-title text="Книги" />
+    <page-title text="Події" />
   </div>
   <div class="w-full flex flex-row justify-end items-center">
     <AppButton
       text="Додати"
       variant="primary"
       class="w-24"
-      @on-click="$router.push('/books/create')"
+      @on-click="$router.push('/events/create')"
     />
   </div>
   <div class="flex flex-col gap-y-8 mt-4">
@@ -18,7 +18,7 @@
       :data="data"
       :options="tableOptions"
       dataPrimaryKey="id"
-      @on-edit="(id) => $router.push(`/books/${id}/edit`)"
+      @on-edit="(id) => $router.push(`/events/${id}/edit`)"
       @on-delete="onDelete"
     >
       <template #id="{ item }">
@@ -27,14 +27,11 @@
       <template #title="{ item }">
         <span>{{ item.title }}</span>
       </template>
-      <template #draft="{ item }">
-        <AppStatus :status="item.draft" />
+      <template #tickets_available="{ item }">
+        <AppStatus :status="item.tickets_available" />
       </template>
-      <template #is_available="{ item }">
-        <AppStatus :status="item.is_available" />
-      </template>
-      <template #is_on_sale="{ item }">
-        <AppStatus :status="item.is_on_sale" />
+      <template #event_end="{ item }">
+        <AppStatus :status="item.event_end" />
       </template>
       <template #createdAt="{ item }">
         <span>{{ dayjs(item.createdAt).format('DD.MM.YYYY HH:mm') || '---' }}</span>
@@ -49,22 +46,22 @@
 import AppTable from '@/components/general/AppTable.vue';
 import AppStatus from '@/components/general/AppStatus.vue';
 import AppButton from '@/components/atoms/buttons/AppButton.vue';
-import { useBooksStore } from '@/stores/books';
+import {useEventsStore} from '@/stores/events';
 import { onMounted, ref, reactive, shallowRef } from 'vue';
 import dayjs from 'dayjs';
 
-const store = useBooksStore();
+const store = useEventsStore();
 
 const data = ref([]);
 
 const breadcrumbsData = shallowRef([
   {
-    title: 'Книги',
-    link: { name: 'BooksList' },
+    title: 'Події',
+    link: { name: 'EventsList' },
   },
   {
     title: 'Список',
-    link: { name: 'BooksList' },
+    link: { name: 'EventsList' },
   },
 ]);
 
@@ -78,16 +75,12 @@ const tableColumns = reactive([
     title: 'Назва',
   },
   {
-    key: 'draft',
-    title: 'Чернетка',
+    key: 'tickets_available',
+    title: 'Квитки в наявності',
   },
   {
-    key: 'is_available',
-    title: 'В наявності',
-  },
-  {
-    key: 'is_on_sale',
-    title: 'На розпродажі',
+    key: 'event_end',
+    title: 'Завершено',
   },
   {
     key: 'createdAt',

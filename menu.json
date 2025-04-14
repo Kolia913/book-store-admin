@@ -35,6 +35,12 @@
         "isGroup": false,
         "title": "Книги",
         "link": "/books"
+      },
+      {
+        "icon": "bi-calendar-event",
+        "isGroup": false,
+        "title": "Події",
+        "link": "/events"
       }
     ]
   },
