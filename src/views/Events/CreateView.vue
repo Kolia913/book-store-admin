@@ -5,6 +5,13 @@
     <template #form>
       <AppPlainInput v-model="data.title" type="text" label="Назва" />
       <AppTextarea v-model="data.description" label="Опис" />
+      <AppFileInput
+        v-for="(img, idx) of newImages"
+        :key="idx"
+        v-model="newImages[idx]"
+        :defaultImage="null"
+        :label="idx !== 0 ? 'Зображення ' + (idx + 1) : 'Головне зображення'"
+      />
     </template>
     <template #controls>
       <div>
@@ -22,6 +29,7 @@
 <script setup>
 import AppPlainInput from '@/components/atoms/inputs/form/AppPlainInput.vue';
 import AppTextarea from '@/components/atoms/inputs/form/AppTextarea.vue';
+import AppFileInput from '@/components/atoms/inputs/form/AppFileInput.vue';
 import AppToggleInput from '@/components/atoms/inputs/form/AppToggleInput.vue';
 import AppButton from '@/components/atoms/buttons/AppButton.vue';
 import FormWrapper from '@/components/forms/FormWrapper.vue';
@@ -32,6 +40,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const store = useEventsStore();
 
+const newImages = ref([null]); 
 
 const data = ref({
   title: '',
@@ -39,7 +48,6 @@ const data = ref({
   tickets_available: true,
   event_end: false,
 });
-
 
 const breadcrumbsData = reactive([
   {
@@ -53,9 +61,21 @@ const breadcrumbsData = reactive([
 ]);
 
 async function onSubmit() {
- 
-  // Send form data
-  await store.save(data.value);
+  const formData = new FormData();
+
+  Object.entries(data.value).forEach(([key, value]) => {
+    if (value) {
+      formData.append(key, value);
+    }
+  });
+
+  newImages.value.forEach((file) => {
+    if (file) {
+      formData.append('images', file); 
+    }
+  });
+
+  await store.save(formData);
   router.back();
 }
 </script>
