@@ -68,7 +68,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const store = useBooksStore();
 
-const newImages = ref([null, null, null, null]); // Ensure reactivity for images
+const newImages = ref(Array(20).fill(null)); // Ensure reactivity for 20 images
 
 const data = ref({
   draft: true,

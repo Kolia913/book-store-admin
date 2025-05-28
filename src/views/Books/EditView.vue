@@ -86,7 +86,7 @@ const route = useRoute();
 const store = useBooksStore();
 
 const rewriteImages = ref(false);
-const newImages = ref([null, null, null, null]);
+const newImages = ref(Array(20).fill(null));
 
 const data = ref({
   id: '',
