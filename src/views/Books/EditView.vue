@@ -50,6 +50,26 @@
           :label="idx !== 0 ? 'Зображення ' + (idx + 1) : 'Головне зображення'"
         />
       </div>
+      <div>Відгуки</div>
+      <span class="block text-xs text-gray-500 dark:text-gray-400"
+          >Змінити відгуки(попередні відгуки будуть видалені при збереженні)</span
+        >
+        <AppToggleInput v-model="rewriteFeedbackImgs" />
+        <div v-if="!rewriteFeedbackImgs">
+        <div v-for="(img, idx) of data.feedback_images" :key="idx">
+          <span>Відгук {{ idx + 1 }}</span>
+          <img :src="config.baseStorage + img" class="max-w-40 mt-2" />
+        </div>
+      </div>
+      <div v-else>
+        <AppFileInput
+          v-for="(img, idx) of newFeedbackImages"
+          :key="idx"
+          v-model="newFeedbackImages[idx]"
+          :defaultImage="null"
+          :label="'Відгук ' + (idx + 1)"
+        />
+      </div>
     </template>
     <template #controls>
       <div>
@@ -86,7 +106,10 @@ const route = useRoute();
 const store = useBooksStore();
 
 const rewriteImages = ref(false);
+const rewriteFeedbackImgs = ref(false);
+
 const newImages = ref(Array(20).fill(null));
+const newFeedbackImages= ref(Array(20).fill(null));
 
 const data = ref({
   id: '',
@@ -127,6 +150,7 @@ onBeforeMount(() => {
 function onSubmit() {
   delete data.value.id;
   delete data.value.images;
+  delete data.value.feedback_images;
   delete data.value.createdAt;
   delete data.value.updatedAt;
 
@@ -140,6 +164,13 @@ function onSubmit() {
     newImages.value.forEach((file) => {
       if (file) {
         formData.append('images', file); // Append multiple files under the same key
+      }
+    });
+  }
+  if (rewriteFeedbackImgs.value) {
+    newFeedbackImages.value.forEach((file) => {
+      if (file) {
+        formData.append('feedback_images', file); // Append multiple files under the same key
       }
     });
   }
