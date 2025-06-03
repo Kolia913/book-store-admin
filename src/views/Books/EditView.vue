@@ -50,7 +50,12 @@
           :label="idx !== 0 ? 'Зображення ' + (idx + 1) : 'Головне зображення'"
         />
       </div>
-      <div>Відгуки</div>
+      <div>Відгуки 
+        <div>
+          <span class="block my-2 text-xs text-gray-500 dark:text-gray-400">Відображати відгуки?</span>
+          <AppToggleInput v-model="data.is_feedback_shown" />
+        </div>
+      </div>
       <span class="block text-xs text-gray-500 dark:text-gray-400"
           >Змінити відгуки(попередні відгуки будуть видалені при збереженні)</span
         >
@@ -124,6 +129,7 @@ const data = ref({
   price_with_signature: '',
   discount_price: '',
   discount_price_with_signature: '',
+  is_feedback_shown: true,
 });
 
 const breadcrumbsData = reactive([
