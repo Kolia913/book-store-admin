@@ -177,7 +177,21 @@ export function defineCrudStore(
         throw new Error(e.message);
       }
     }
-
+    async function patch({ id, payload }) {
+      try {
+        const res = await request.patch({
+          url: `/${id}`,
+          data: payload,
+          config: {
+            ...getCustomConfig('patch'),
+          },
+        });
+        toast.success(res.data?.message?.length ? res.data?.message : 'Saved!');
+      } catch (e) {
+        toast.error(e.message);
+        throw new Error(e.message);
+      }
+    }
     /**
      * Remove an item.
      * @param {string} id - The ID of the item to remove.
@@ -207,6 +221,7 @@ export function defineCrudStore(
       fetch: !omit.includes('fetch') ? fetch : omittedFunction('fetch'),
       save: !omit.includes('save') ? save : omittedFunction('save'),
       update: !omit.includes('update') ? update : omittedFunction('update'),
+      patch: !omit.includes('patch') ? patch : omittedFunction('patch'),
       remove: !omit.includes('remove') ? remove : omittedFunction('remove'),
     };
   });
