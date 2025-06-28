@@ -190,8 +190,12 @@ onBeforeMount(() => {
 
 function onSubmit() {
   delete data.value.id;
-  delete data.value.images;
-  delete data.value.feedback_images;
+  if (rewriteImages.value) {
+    delete data.value.images;
+  }
+  if (rewriteFeedbackImgs.value) {
+    delete data.value.feedback_images;
+  }
   delete data.value.createdAt;
   delete data.value.updatedAt;
 
@@ -209,13 +213,15 @@ function onSubmit() {
       }
     });
   }
-  if (rewriteFeedbackImgs.value) {
+ if (rewriteFeedbackImgs.value) {
     newFeedbackImages.value.forEach((file) => {
       if (file) {
         formData.append('feedback_images', file); // Append multiple files under the same key
       }
     });
   }
+
+
 
   store.update({ id: route.params.id, payload: formData });
 }
