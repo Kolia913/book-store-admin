@@ -206,28 +206,19 @@ function onSubmit() {
     }
   });
 
-  if (rewriteImages.value) {
-    const keepImages = data.value.images?.filter(Boolean) ?? [];
-    formData.append("keep_images", JSON.stringify(keepImages));
-    newImages.value
-      .filter((file) => file instanceof File)
-      .forEach((file) => {
-        formData.append("images", file);
-      });
-  } else {
-    formData.append("keep_images", JSON.stringify(data.value.images ?? []));
+   if (rewriteImages.value) {
+    newImages.value.forEach((file) => {
+      if (file) {
+        formData.append('images', file); // Append multiple files under the same key
+      }
+    });
   }
-
   if (rewriteFeedbackImgs.value) {
-    const keepFeedbackImages = data.value.feedback_images?.filter(Boolean) ?? [];
-    formData.append("keep_feedback_images", JSON.stringify(keepFeedbackImages));
-    newFeedbackImages.value
-      .filter((file) => file instanceof File)
-      .forEach((file) => {
-        formData.append("feedback_images", file);
-      });
-  } else {
-    formData.append("keep_feedback_images", JSON.stringify(data.value.feedback_images ?? []));
+    newFeedbackImages.value.forEach((file) => {
+      if (file) {
+        formData.append('feedback_images', file); // Append multiple files under the same key
+      }
+    });
   }
 
   store.update({ id: route.params.id, payload: formData });
