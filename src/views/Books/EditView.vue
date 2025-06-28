@@ -190,19 +190,15 @@ onBeforeMount(() => {
 
 function onSubmit() {
   delete data.value.id;
+  delete data.value.images;
+  delete data.value.feedback_images;
   delete data.value.createdAt;
   delete data.value.updatedAt;
 
   const formData = new FormData();
-
   Object.entries(data.value).forEach(([key, value]) => {
-    if (
-      key !== "images" &&
-      key !== "feedback_images" &&
-      value !== undefined &&
-      value !== null
-    ) {
-      formData.append(key, value);
+    if (value) {
+      formData.append(key, value); // Ensure no `undefined` values
     }
   });
 
