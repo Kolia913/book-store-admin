@@ -6,7 +6,7 @@
       <AppPlainInput v-model="data.title" type="text" label="Назва" />
       <AppPlainInput v-model="data.author" type="text" label="Автор" />
       <AppPlainInput v-model="data.page_desc_caption" type="text" label="Текст перед полем опис" />
-      <div ref="editorRef" label="Опис" ></div>
+      <AppTextarea v-model="data.description" label="Опис" />
       <span>Ціни потрібно вводити у форматі 99.99(через крапку)</span>
       <AppPlainInput v-model="data.price" type="text" pattern="[0-9]*[.,]?[0-9]*" label="Ціна" />
       <AppPlainInput
@@ -37,12 +37,9 @@
       </div>
       <div v-if="!rewriteImages">
         <div v-for="(img, idx) of data.images" :key="idx">
-  <div class="pt-4">
-    <span>Зображення {{ idx + 1 }}</span>
-  </div>
-  <img :src="img.startsWith('blob:') ? img : config.baseStorage + img" class="max-w-40 mt-1" />
-</div>
-
+          <span>Зображення {{ idx + 1 }}</span>
+          <img :src="config.baseStorage + img" class="max-w-40 mt-2" />
+        </div>
       </div>
       <div v-else>
         <AppFileInput
@@ -98,16 +95,15 @@
 </template>
 <script setup>
 import AppPlainInput from '@/components/atoms/inputs/form/AppPlainInput.vue';
+import AppTextarea from '@/components/atoms/inputs/form/AppTextarea.vue';
 import AppFileInput from '@/components/atoms/inputs/form/AppFileInput.vue';
 import AppToggleInput from '@/components/atoms/inputs/form/AppToggleInput.vue';
 import AppButton from '@/components/atoms/buttons/AppButton.vue';
 import FormWrapper from '@/components/forms/FormWrapper.vue';
 import useAppConfig from '@/core/composables/useAppConfig';
 import { useBooksStore } from '@/stores/books';
-import { reactive, ref, onBeforeMount, onMounted } from 'vue';
+import { reactive, ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
-import Quill from 'quill';
-import 'quill/dist/quill.snow.css'
 
 const config = useAppConfig();
 
@@ -119,8 +115,6 @@ const rewriteFeedbackImgs = ref(false);
 
 const newImages = ref(Array(20).fill(null));
 const newFeedbackImages= ref(Array(20).fill(null));
-
-
 
 const data = ref({
   id: '',
@@ -136,8 +130,6 @@ const data = ref({
   discount_price: '',
   discount_price_with_signature: '',
   is_feedback_shown: true,
-  images: [],
-  feedback_images: [],
 });
 
 const breadcrumbsData = reactive([
@@ -155,33 +147,6 @@ const breadcrumbsData = reactive([
   },
 ]);
 
-const editorRef = ref(null)
-
-onMounted(() => {
-  const quill = new Quill(editorRef.value, {
-    theme: 'snow',
-    modules: {
-      toolbar: [
-        ['bold', 'italic', 'underline'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['link']
-      ]
-    }
-  })
-
-  store.fetch(route.params.id).then((res) => {
-    data.value = res;
-    quill.root.innerHTML = res.description || '';
-  })
-
-  quill.on('text-change', () => {
-    data.value.description = quill.root.innerHTML
-  })
-})
-
-
-
-
 onBeforeMount(() => {
   store.fetch(route.params.id).then((res) => {
     data.value = res;
@@ -190,44 +155,30 @@ onBeforeMount(() => {
 
 function onSubmit() {
   delete data.value.id;
+  delete data.value.images;
+  delete data.value.feedback_images;
   delete data.value.createdAt;
   delete data.value.updatedAt;
 
   const formData = new FormData();
-
   Object.entries(data.value).forEach(([key, value]) => {
-    if (
-      key !== "images" &&
-      key !== "feedback_images" &&
-      value !== undefined &&
-      value !== null
-    ) {
-      formData.append(key, value);
+    if (value) {
+      formData.append(key, value); // Ensure no `undefined` values
     }
   });
-
   if (rewriteImages.value) {
-    const keepImages = data.value.images?.filter(Boolean) ?? [];
-    formData.append("keep_images", JSON.stringify(keepImages));
-    newImages.value
-      .filter((file) => file instanceof File)
-      .forEach((file) => {
-        formData.append("images", file);
-      });
-  } else {
-    formData.append("keep_images", JSON.stringify(data.value.images ?? []));
+    newImages.value.forEach((file) => {
+      if (file) {
+        formData.append('images', file); // Append multiple files under the same key
+      }
+    });
   }
-
   if (rewriteFeedbackImgs.value) {
-    const keepFeedbackImages = data.value.feedback_images?.filter(Boolean) ?? [];
-    formData.append("keep_feedback_images", JSON.stringify(keepFeedbackImages));
-    newFeedbackImages.value
-      .filter((file) => file instanceof File)
-      .forEach((file) => {
-        formData.append("feedback_images", file);
-      });
-  } else {
-    formData.append("keep_feedback_images", JSON.stringify(data.value.feedback_images ?? []));
+    newFeedbackImages.value.forEach((file) => {
+      if (file) {
+        formData.append('feedback_images', file); // Append multiple files under the same key
+      }
+    });
   }
 
   store.update({ id: route.params.id, payload: formData });
