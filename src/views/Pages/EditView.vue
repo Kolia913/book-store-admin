@@ -60,8 +60,22 @@
                 class="py-2"
                 @change="setKey(`content.${section}.${field}.value`, $event.target.value)"
               />
+              <div v-if="
+                  data.key === 'extended-history' && data.content[section][field].type === 'text'
+                " class="pb-2">Текст інтерв'ю</div>
+              <QuillEditor
+                v-if="
+                  (data.key === 'extended-history' && data.content[section][field].type === 'text') || (data.key === 'home' && data.content[section][field].type === 'text') 
+                "
+                v-model:content="data.content[section][field].value"
+                content-type="html"
+                :options="quillOptions"
+                class="py-2"
+                @update:content="(val) => setKey(`content.${section}.${field}.value`, val)"
+                
+              />
               <AppTextarea
-                v-if="data.content[section][field].type === 'text'"
+                v-else-if="data.content[section][field].type === 'text'"
                 v-model="data.content[section][field].value"
                 label="Вміст (текст)"
                 class="py-2"
@@ -123,6 +137,8 @@ import { usePagesStore } from '@/stores/pages';
 import { useBooksStore } from '@/stores/books';
 import { reactive, ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
 const route = useRoute();
 const store = usePagesStore();
@@ -158,7 +174,12 @@ const editedFormData = ref(new FormData());
 function setKey(key, value) {
   editedFormData.value.set(key, value);
 }
-
+const quillOptions = {
+  theme: 'snow',
+  modules: {
+    toolbar: [['bold', 'italic', 'underline'], [{ list: 'ordered' }, { list: 'bullet' }], ['link']],
+  },
+};
 onBeforeMount(() => {
   booksStore.fetchMany().then((res) => {
     console.log(res.map((item) => ({ label: item.title, value: item.id })));

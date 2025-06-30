@@ -3,8 +3,10 @@
   <page-title :text="`Редагувати подію`" />
   <FormWrapper @submit="onSubmit">
     <template #form>
+      
       <AppPlainInput v-model="data.title" type="text" label="Назва" />
-      <AppTextarea v-model="data.description" label="Опис" />
+      
+      <div ref="editorRef"></div>
       <div>
         <span class="block mb-2 text-xs text-gray-500 dark:text-gray-400"
           >Змінити зображення(попередні зображення будуть видалені при збереженні)</span
@@ -42,16 +44,16 @@
 </template>
 <script setup>
 import AppPlainInput from '@/components/atoms/inputs/form/AppPlainInput.vue';
-import AppTextarea from '@/components/atoms/inputs/form/AppTextarea.vue';
 import AppFileInput from '@/components/atoms/inputs/form/AppFileInput.vue';
 import AppToggleInput from '@/components/atoms/inputs/form/AppToggleInput.vue';
 import AppButton from '@/components/atoms/buttons/AppButton.vue';
 import FormWrapper from '@/components/forms/FormWrapper.vue';
 import { useEventsStore } from '@/stores/events';
-import { reactive, ref, onBeforeMount } from 'vue';
+import { reactive, ref, onBeforeMount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import useAppConfig from '@/core/composables/useAppConfig';
-
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css'
 
 const config = useAppConfig();
 
@@ -83,6 +85,30 @@ const breadcrumbsData = reactive([
     link: { name: 'EventsEdit', params: { id: route.params.id } },
   },
 ]);
+const editorRef = ref(null)
+
+onMounted(() => {
+  const quill = new Quill(editorRef.value, {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link']
+      ]
+    },
+    placeholder: 'Compose an epic...',
+  })
+
+  store.fetch(route.params.id).then((res) => {
+    data.value = res;
+    quill.root.innerHTML = res.description || '';
+  })
+
+  quill.on('text-change', () => {
+    data.value.description = quill.root.innerHTML
+  })
+})
 
 onBeforeMount(() => {
   store.fetch(route.params.id).then((res) => {

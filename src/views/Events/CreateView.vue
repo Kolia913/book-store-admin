@@ -4,7 +4,7 @@
   <FormWrapper @submit="onSubmit">
     <template #form>
       <AppPlainInput v-model="data.title" type="text" label="Назва" />
-      <AppTextarea v-model="data.description" label="Опис" />
+      <div ref="editorRef" label="Опис" ></div>
       <AppFileInput
         v-for="(img, idx) of newImages"
         :key="idx"
@@ -28,16 +28,18 @@
 </template>
 <script setup>
 import AppPlainInput from '@/components/atoms/inputs/form/AppPlainInput.vue';
-import AppTextarea from '@/components/atoms/inputs/form/AppTextarea.vue';
 import AppFileInput from '@/components/atoms/inputs/form/AppFileInput.vue';
 import AppToggleInput from '@/components/atoms/inputs/form/AppToggleInput.vue';
 import AppButton from '@/components/atoms/buttons/AppButton.vue';
 import FormWrapper from '@/components/forms/FormWrapper.vue';
 import { useEventsStore } from '@/stores/events';
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css'
 
 const router = useRouter();
+const route = useRoute()
 const store = useEventsStore();
 
 const newImages = ref([null]); 
@@ -59,7 +61,29 @@ const breadcrumbsData = reactive([
     link: { name: 'EventsCreate' },
   },
 ]);
+const editorRef = ref(null)
 
+onMounted(() => {
+  const quill = new Quill(editorRef.value, {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link']
+      ]
+    }
+  })
+
+  store.fetch(route.params.id).then((res) => {
+    data.value = res;
+    quill.root.innerHTML = res.description || '';
+  })
+
+  quill.on('text-change', () => {
+    data.value.description = quill.root.innerHTML
+  })
+})
 async function onSubmit() {
   const formData = new FormData();
 

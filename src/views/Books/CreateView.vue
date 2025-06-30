@@ -6,7 +6,8 @@
       <AppPlainInput v-model="data.title" type="text" label="Назва" />
       <AppPlainInput v-model="data.author" type="text" label="Автор" />
       <AppPlainInput v-model="data.page_desc_caption" type="text" label="Текст перед полем опис" />
-      <AppTextarea v-model="data.description" label="Опис" />
+  
+      <div ref="editorRef" label="Опис" ></div>
       <span>Ціни потрібно вводити у форматі 99.99(через крапку)</span>
       <AppPlainInput v-model="data.price" type="text" pattern="[0-9]*[.,]?[0-9]*" label="Ціна" />
       <AppPlainInput
@@ -56,16 +57,18 @@
 </template>
 <script setup>
 import AppPlainInput from '@/components/atoms/inputs/form/AppPlainInput.vue';
-import AppTextarea from '@/components/atoms/inputs/form/AppTextarea.vue';
 import AppFileInput from '@/components/atoms/inputs/form/AppFileInput.vue';
 import AppToggleInput from '@/components/atoms/inputs/form/AppToggleInput.vue';
 import AppButton from '@/components/atoms/buttons/AppButton.vue';
 import FormWrapper from '@/components/forms/FormWrapper.vue';
 import { useBooksStore } from '@/stores/books';
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css'
 
 const router = useRouter();
+const route = useRoute()
 const store = useBooksStore();
 
 const newImages = ref(Array(20).fill(null)); // Ensure reactivity for 20 images
@@ -94,6 +97,30 @@ const breadcrumbsData = reactive([
     link: { name: 'BooksCreate' },
   },
 ]);
+const editorRef = ref(null)
+
+onMounted(() => {
+  const quill = new Quill(editorRef.value, {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['link']
+      ]
+    }
+  })
+
+  store.fetch(route.params.id).then((res) => {
+    data.value = res;
+    quill.root.innerHTML = res.description || '';
+  })
+
+  quill.on('text-change', () => {
+    data.value.description = quill.root.innerHTML
+  })
+})
+
 
 async function onSubmit() {
   const formData = new FormData();
